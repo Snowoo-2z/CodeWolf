@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "tracks": [
+    {
+      "id": "web-foundations",
+      "title": "Fondations du Web",
+      "description": "Construire des interfaces web accessibles, responsives et interactives.",
+      "levels": [
+        {
+          "id": "foundation",
+          "title": "Fondamental",
+          "minMastery": 0,
+          "skills": [
+            {"id":"html.document","title":"Structure d’un document HTML","category":"HTML","difficulty":1,"prerequisites":[],"objectives":["Identifier les éléments racines","Créer une page HTML valide"],"evidence":["doctype","html","head","body"]},
+            {"id":"html.semantic","title":"Sémantique HTML","category":"HTML","difficulty":1,"prerequisites":["html.document"],"objectives":["Choisir une balise selon son rôle","Structurer un contenu accessible"],"evidence":["main","header","nav","article","footer"]},
+            {"id":"html.forms","title":"Formulaires accessibles","category":"HTML","difficulty":2,"prerequisites":["html.semantic"],"objectives":["Associer label et champ","Choisir les bons types d’input"],"evidence":["form","label","input","button"]},
+            {"id":"css.selectors","title":"Sélecteurs et cascade","category":"CSS","difficulty":1,"prerequisites":["html.document"],"objectives":["Cibler un élément","Comprendre cascade et héritage"],"evidence":["selector","class","specificity"]},
+            {"id":"css.box-model","title":"Box model et espacements","category":"CSS","difficulty":1,"prerequisites":["css.selectors"],"objectives":["Distinguer margin et padding","Dimensionner un composant"],"evidence":["padding","margin","border","box-sizing"]},
+            {"id":"css.flexbox","title":"Mises en page avec Flexbox","category":"CSS","difficulty":2,"prerequisites":["css.box-model"],"objectives":["Aligner sur deux axes","Créer un layout flexible"],"evidence":["display:flex","justify-content","align-items","gap"]},
+            {"id":"js.basics","title":"Variables, types et conditions","category":"JavaScript","difficulty":2,"prerequisites":["html.document"],"objectives":["Déclarer une donnée","Écrire une condition"],"evidence":["const","let","if","boolean"]}
+          ]
+        },
+        {
+          "id": "intermediate",
+          "title": "Intermédiaire",
+          "minMastery": 45,
+          "skills": [
+            {"id":"css.grid","title":"Layouts avec CSS Grid","category":"CSS","difficulty":3,"prerequisites":["css.flexbox"],"objectives":["Créer une grille","Construire un layout responsive"],"evidence":["display:grid","grid-template-columns","minmax"]},
+            {"id":"css.responsive","title":"Responsive design","category":"CSS","difficulty":3,"prerequisites":["css.flexbox"],"objectives":["Utiliser les media queries","Concevoir mobile-first"],"evidence":["@media","clamp","viewport"]},
+            {"id":"js.functions","title":"Fonctions et portée","category":"JavaScript","difficulty":3,"prerequisites":["js.basics"],"objectives":["Décomposer un problème","Comprendre paramètres et retour"],"evidence":["function","return","scope"]},
+            {"id":"js.dom","title":"Manipulation du DOM","category":"JavaScript","difficulty":3,"prerequisites":["js.functions","html.semantic"],"objectives":["Sélectionner un élément","Modifier l’interface"],"evidence":["querySelector","textContent","classList"]},
+            {"id":"js.events","title":"Événements utilisateur","category":"JavaScript","difficulty":3,"prerequisites":["js.dom"],"objectives":["Écouter une interaction","Mettre à jour l’état visuel"],"evidence":["addEventListener","click","input"]},
+            {"id":"a11y.basics","title":"Accessibilité fondamentale","category":"Qualité","difficulty":3,"prerequisites":["html.semantic","html.forms"],"objectives":["Naviguer au clavier","Fournir des noms accessibles"],"evidence":["alt","aria","focus","label"]}
+          ]
+        },
+        {
+          "id": "advanced",
+          "title": "Avancé",
+          "minMastery": 70,
+          "skills": [
+            {"id":"js.arrays","title":"Collections et transformations","category":"JavaScript","difficulty":4,"prerequisites":["js.functions"],"objectives":["Transformer une collection","Éviter les mutations inutiles"],"evidence":["map","filter","reduce"]},
+            {"id":"js.async","title":"JavaScript asynchrone","category":"JavaScript","difficulty":4,"prerequisites":["js.functions"],"objectives":["Consommer une promesse","Gérer les erreurs réseau"],"evidence":["async","await","try","catch"]},
+            {"id":"web.api","title":"Consommer une API","category":"JavaScript","difficulty":4,"prerequisites":["js.async"],"objectives":["Effectuer une requête","Afficher les données et erreurs"],"evidence":["fetch","response","json"]},
+            {"id":"quality.testing","title":"Tests et débogage","category":"Qualité","difficulty":4,"prerequisites":["js.events"],"objectives":["Définir un cas de test","Diagnostiquer une régression"],"evidence":["assert","console","edge case"]},
+            {"id":"project.architecture","title":"Architecture d’un projet","category":"Qualité","difficulty":5,"prerequisites":["js.dom","css.responsive"],"objectives":["Séparer les responsabilités","Organiser des modules"],"evidence":["module","import","separation of concerns"]}
+          ]
+        }
+      ]
+    }
+  ]
+}

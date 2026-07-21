@@ -1,0 +1,4 @@
+export function runChallengeTests(files,tests=[]){return tests.map((test,index)=>{const content=String(files[test.file]||'');let passed=false;try{if(test.type==='contains')passed=content.toLowerCase().includes(String(test.value||'').toLowerCase());else if(test.type==='notContains')passed=!content.toLowerCase().includes(String(test.value||'').toLowerCase());else if(test.type==='regex')passed=new RegExp(test.value,'i').test(content)}catch{}return {index,label:test.label||`${test.file} respecte ${test.type} ${test.value}`,passed,file:test.file}})}
+export function automaticScore(results){if(!results.length)return 0;return Math.round(results.filter(r=>r.passed).length/results.length*100)}
+export function extractAiScore(text){const m=String(text).match(/SCORE\s*:\s*(\d{1,3})/i);return Math.min(100,Math.max(0,Number(m?.[1]||0)))}
+export function finalScore(auto,ai){return Math.round(auto*.6+ai*.4)}
