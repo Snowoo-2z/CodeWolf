@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Profile - CodeWolf</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-card">
+    <div class="brand-center">
+      <h2>Complete Your Profile</h2>
+      <p>Welcome! Let's configure your CodeWolf identity.</p>
+    </div>
+
+    <form onsubmit="completeOnboarding(event)" class="onboarding-form">
+      <div class="form-group">
+        <label>Choose a Username</label>
+        <input type="text" id="usernameInput" placeholder="e.g. wolfdev" required>
+      </div>
+
+      <div class="form-group">
+        <label>What should the AI call you?</label>
+        <input type="text" id="aiNameInput" placeholder="e.g. Master, Chief, Alex" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Continue to Dashboard</button>
+    </form>
+  </div>
+
+  <script>
+    function completeOnboarding(e) {
+      e.preventDefault();
+      const username = document.getElementById('usernameInput').value;
+      const aiName = document.getElementById('aiNameInput').value;
+      
+      localStorage.setItem('codewolf_logged_in', 'true');
+      localStorage.setItem('codewolf_username', username);
+      localStorage.setItem('codewolf_ai_name', aiName);
+
+      location.href = 'dashboard.html';
+    }
+  </script>
+</body>
+</html>

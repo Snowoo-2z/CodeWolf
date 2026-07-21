@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeWolf - AI-Powered Code & Agent Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing-body">
+
+  <nav class="landing-nav">
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <span>CodeWolf</span>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn" onclick="location.href='signin.html'">Sign In</button>
+      <button class="btn btn-primary" onclick="location.href='signin.html'">Sign Up</button>
+    </div>
+  </nav>
+
+  <main class="hero-section">
+    <div class="hero-content">
+      <span class="badge">Next-Gen AI Development</span>
+      <h1>Build the future with <span class="gradient-text">CodeWolf</span></h1>
+      <p>The ultimate collaborative environment for developers and intelligent AI agents. Fast, seamless, and built for modern workflows.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-large" onclick="checkAuthAndRedirect()">Get Started Free</button>
+        <button class="btn btn-large" onclick="location.href='signin.html'">Explore Features</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function checkAuthAndRedirect() {
+      // Simulate auth check: if logged in -> dashboard, else -> signin
+      const isLoggedIn = localStorage.getItem('codewolf_logged_in');
+      if (isLoggedIn === 'true') {
+        location.href = 'dashboard.html';
+      } else {
+        location.href = 'signin.html';
+      }
+    }
+  </script>
+</body>
+</html>
