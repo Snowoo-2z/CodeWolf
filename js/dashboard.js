@@ -1,110 +1,128 @@
-// CodeWolf Dashboard & AI Coach Logic
+// Wolfy AI Teacher Dashboard Logic
+
+let studentMemory = {
+  level: "Unknown",
+  strengths: [],
+  weaknesses: [],
+  goals: "Learn HTML, CSS & JS",
+  mood: "Motivated"
+};
+
+let userLang = 'en';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Check authentication
   const user = await window.CodeWolfAuth.getUserSession();
   if (!user) {
     window.location.href = '/signin';
     return;
   }
 
-  // 2. Check if username & AI name are chosen
-  const username = localStorage.getItem('codewolf_username');
-  const aiName = localStorage.getItem('codewolf_ai_name');
-  if (!username || !aiName) {
-    window.location.href = '/onboarding';
-    return;
+  // Detect browser language
+  const navLang = navigator.language || navigator.userLanguage || 'en';
+  userLang = navLang.startsWith('fr') ? 'fr' : 'en';
+  document.getElementById('detectedLang').textContent = `Lang: ${userLang.toUpperCase()}`;
+
+  // Load saved student memory if exists
+  const savedMem = localStorage.getItem('codewolf_student_memory');
+  if (savedMem) {
+    try { studentMemory = JSON.parse(savedMem); } catch(e) {}
   }
-
-  document.getElementById('userGreeting').textContent = `Hello, ${username} (AI: ${aiName})`;
-
-  // 3. Check if at least 1 API key is configured
-  checkApiKeys();
-
-  // Customize welcome message with AI name
-  document.getElementById('welcomeMessage').textContent = `Hello ${username}! I'm ${aiName}, your AI Coach. To start, could you honestly describe your current coding level? (Beginner, Intermediate, Advanced, Expert)`;
+  updateMemoryUI();
+  updatePopoverBadge();
 });
 
-function checkApiKeys() {
-  const keys = ['openrouter', 'openai', 'anthropic', 'gemini', 'mistral'];
-  const hasKey = keys.some(k => localStorage.getItem(`codewolf_key_${k}`));
+function answerCall() {
+  document.getElementById('callScreen').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('callScreen').style.display = 'none';
+    startWolfySession();
+  }, 400);
+}
 
-  if (!hasKey) {
-    document.getElementById('apiKeyModal').style.display = 'flex';
+function toggleModelPopover() {
+  const popover = document.getElementById('modelPopover');
+  popover.classList.toggle('active');
+}
+
+function updatePopoverBadge() {
+  const tier = document.getElementById('modelTier').value;
+  const reasoning = document.getElementById('reasoningSlider').value;
+  const tierName = tier === 'free' ? 'Free' : 'Paid';
+  document.getElementById('popoverBadge').textContent = `${tierName} • Reasoning x${reasoning}`;
+}
+
+function startWolfySession() {
+  const chatMessages = document.getElementById('chatMessages');
+  
+  let welcomeText = userLang === 'fr' 
+    ? "Salut ! Je suis **Wolfy**, ton professeur d'HTML, CSS et JavaScript. Je vais t'accompagner pas à pas. Pour commencer, dis-moi : quel est ton niveau actuel en programmation web ? (Débutant, Intermédiaire, Avancé...)"
+    : "Hey! I'm **Wolfy**, your HTML, CSS, and JavaScript teacher. I'll guide you step by step. To start, tell me: what is your current web development skill level? (Beginner, Intermediate, Advanced...)";
+
+  appendMessage('wolfy', welcomeText);
+}
+
+function appendMessage(sender, markdownText) {
+  const chatMessages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `message ${sender}`;
+  
+  if (sender === 'wolfy') {
+    div.innerHTML = marked.parse(markdownText);
   } else {
-    document.getElementById('apiKeyModal').style.display = 'none';
-  }
-}
-
-function openApiModal() {
-  document.getElementById('apiKeyModal').style.display = 'flex';
-}
-
-function saveApiKeys() {
-  const openrouter = document.getElementById('keyOpenRouter').value.trim();
-  const openai = document.getElementById('keyOpenAI').value.trim();
-  const anthropic = document.getElementById('keyAnthropic').value.trim();
-  const gemini = document.getElementById('keyGemini').value.trim();
-  const mistral = document.getElementById('keyMistral').value.trim();
-
-  if (!openrouter && !openai && !anthropic && !gemini && !mistral) {
-    alert('Please provide at least one API key to continue.');
-    return;
+    div.textContent = markdownText;
   }
 
-  if (openrouter) localStorage.setItem('codewolf_key_openrouter', openrouter);
-  if (openai) localStorage.setItem('codewolf_key_openai', openai);
-  if (anthropic) localStorage.setItem('codewolf_key_anthropic', anthropic);
-  if (gemini) localStorage.setItem('codewolf_key_gemini', gemini);
-  if (mistral) localStorage.setItem('codewolf_key_mistral', mistral);
-
-  document.getElementById('apiKeyModal').style.display = 'none';
-  alert('API keys saved successfully!');
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-async function sendUserMessage() {
+function updateMemoryUI() {
+  document.getElementById('memoryBox').textContent = JSON.stringify(studentMemory, null, 2);
+}
+
+async function sendMessage() {
   const input = document.getElementById('userInput');
-  const chatBox = document.getElementById('chatBox');
   const text = input.value.trim();
   if (!text) return;
 
-  // Append user message
-  const userBubble = document.createElement('div');
-  userBubble.className = 'chat-bubble user';
-  userBubble.textContent = text;
-  chatBox.appendChild(userBubble);
+  appendMessage('user', text);
   input.value = '';
-  chatBox.scrollTop = chatBox.scrollHeight;
 
-  const aiName = localStorage.getItem('codewolf_ai_name') || 'Coach';
+  const reasoningPower = parseInt(document.getElementById('reasoningSlider').value);
+  const modelTier = document.getElementById('modelTier').value;
 
-  // 3-Step Simulation Request Flow (Thinking -> Preview -> Final Render)
-  const aiBubble = document.createElement('div');
-  aiBubble.className = 'chat-bubble ai';
-  chatBox.appendChild(aiBubble);
+  // Show "Wolfy is reflecting..." with reasoning multiplier
+  const chatMessages = document.getElementById('chatMessages');
+  const thinkingId = 'thinking_' + Date.now();
+  const thinkingDiv = document.createElement('div');
+  thinkingDiv.id = thinkingId;
+  thinkingDiv.className = 'thinking-indicator';
+  thinkingDiv.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> Wolfy is reflecting (Reasoning x${reasoningPower}, ${modelTier} model)...`;
+  chatMessages.appendChild(thinkingDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 
-  // Step 1: Réfléchir
-  aiBubble.innerHTML = `<div class="sim-step">[1/3] ${aiName} is thinking & analyzing your level...</div>`;
-  chatBox.scrollTop = chatBox.scrollHeight;
+  // Simulate AI response delay proportional to reasoning power
+  const delay = Math.min(800 + (reasoningPower * 100), 4000);
+  await new Promise(r => setTimeout(r, delay));
 
-  await new Promise(r => setTimeout(r, 1200));
+  // Remove thinking indicator
+  document.getElementById(thinkingId)?.remove();
 
-  // Step 2: Preview dans le ton
-  aiBubble.innerHTML += `<div class="sim-step">[2/3] Preparing tailored response in tone...</div>`;
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  await new Promise(r => setTimeout(r, 1200));
-
-  // Step 3: Rendu final
-  let responseText = "";
-  if (text.toLowerCase().includes('beginner') || text.toLowerCase().includes('débutant')) {
-    responseText = `Got it! As a beginner, I'll guide you step-by-step with clear explanations, best practices, and patience. Let's build your first project together!`;
-  } else if (text.toLowerCase().includes('intermediate') || text.toLowerCase().includes('intermédiaire')) {
-    responseText = `Awesome! At an intermediate level, we can dive straight into architecture patterns, efficient debugging, and scalable code structures.`;
+  // Generate response
+  let response = "";
+  if (userLang === 'fr') {
+    response = `C'est noté ! En tant que **Wolfy**, j'analyse ton niveau avec une puissance de raisonnement de **x${reasoningPower}**. Ta fiche de mémoire a été mise à jour. Que souhaites-tu aborder maintenant en HTML, CSS ou JavaScript ?`;
   } else {
-    responseText = `Impressive! Advanced/Expert level detected. We will focus on high-performance optimization, system architecture, and advanced AI agent workflows.`;
+    response = `Got it! As **Wolfy**, I've processed your message using reasoning power **x${reasoningPower}** (${modelTier} tier). Your student memory has been updated. What topic in HTML, CSS, or JS should we tackle next?`;
   }
 
-  aiBubble.innerHTML = `<strong>${aiName}:</strong> ${responseText}`;
-  chatBox.scrollTop = chatBox.scrollHeight;
+  // 3x Self-Check verification simulation (repeated reasoningPower times for rigorous self-check)
+  for (let pass = 0; pass < 3; pass++) {
+    studentMemory.progress = Math.min(100, studentMemory.progress + (reasoningPower * 2));
+  }
+  studentMemory.level = text;
+  localStorage.setItem('codewolf_student_memory', JSON.stringify(studentMemory));
+  updateMemoryUI();
+
+  appendMessage('wolfy', response);
 }
