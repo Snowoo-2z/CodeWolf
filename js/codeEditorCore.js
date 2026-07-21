@@ -1,14 +1,14 @@
-import {basicSetup,EditorView} from 'https://esm.sh/codemirror@6.0.1';
-import {EditorState,Compartment} from 'https://esm.sh/@codemirror/state@6.5.2';
-import {keymap,highlightActiveLine,highlightActiveLineGutter,drawSelection,dropCursor,rectangularSelection,crosshairCursor} from 'https://esm.sh/@codemirror/view@6.36.5';
-import {defaultKeymap,historyKeymap,indentWithTab} from 'https://esm.sh/@codemirror/commands@6.8.1';
-import {searchKeymap,highlightSelectionMatches} from 'https://esm.sh/@codemirror/search@6.5.10';
-import {autocompletion,completionKeymap,closeBrackets,closeBracketsKeymap} from 'https://esm.sh/@codemirror/autocomplete@6.18.6';
-import {foldGutter,foldKeymap,bracketMatching,indentOnInput,syntaxHighlighting,defaultHighlightStyle} from 'https://esm.sh/@codemirror/language@6.10.8';
-import {html} from 'https://esm.sh/@codemirror/lang-html@6.4.9';
-import {css} from 'https://esm.sh/@codemirror/lang-css@6.3.1';
-import {javascript} from 'https://esm.sh/@codemirror/lang-javascript@6.2.3';
-import {lintGutter} from 'https://esm.sh/@codemirror/lint@6.8.5';
+import {basicSetup,EditorView} from 'codemirror';
+import {EditorState,Compartment} from '@codemirror/state';
+import {keymap,highlightActiveLine,highlightActiveLineGutter,drawSelection,dropCursor,rectangularSelection,crosshairCursor} from '@codemirror/view';
+import {defaultKeymap,historyKeymap,indentWithTab} from '@codemirror/commands';
+import {searchKeymap,highlightSelectionMatches} from '@codemirror/search';
+import {autocompletion,completionKeymap,closeBrackets,closeBracketsKeymap} from '@codemirror/autocomplete';
+import {foldGutter,foldKeymap,bracketMatching,indentOnInput,syntaxHighlighting,defaultHighlightStyle} from '@codemirror/language';
+import {html} from '@codemirror/lang-html';
+import {css} from '@codemirror/lang-css';
+import {javascript} from '@codemirror/lang-javascript';
+import {lintGutter} from '@codemirror/lint';
 
 const language=new Compartment(),readOnly=new Compartment();let view,currentFile='index.html',syncing=false;
 function languageFor(name){if(name.endsWith('.html')||name.endsWith('.htm'))return html({autoCloseTags:true});if(name.endsWith('.css'))return css();if(name.endsWith('.js')||name.endsWith('.mjs'))return javascript({jsx:true});return []}

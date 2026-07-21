@@ -4,12 +4,15 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/signin", "destination": "/signin.html" },
+    { "source": "/auth-callback", "destination": "/auth-callback.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/assessment", "destination": "/assessment.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/lesson", "destination": "/lesson.html" },
     { "source": "/library", "destination": "/library.html" },
-    { "source": "/studio", "destination": "/studio.html" }
+    { "source": "/progress", "destination": "/progress.html" },
+    { "source": "/studio", "destination": "/studio.html" },
+    { "source": "/preview", "destination": "/preview.html" }
   ],
   "headers": [{"source":"/(.*)","headers":[
     {"key":"X-Content-Type-Options","value":"nosniff"},
