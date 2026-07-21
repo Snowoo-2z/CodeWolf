@@ -207,11 +207,22 @@
   <!-- API Key Setup Modal -->
   <div id="apiKeyModal" class="modal-overlay" style="display: none;">
     <div class="modal-card">
-      <h2>Configure API Keys</h2>
-      <p style="font-size: 13px; color: var(--text-muted);">Provide at least one API key (OpenRouter recommended for free models) to enable real AI responses with Wolfy. Saved securely in your browser.</p>
+      <h2>Configure API Keys & Provider Priority</h2>
+      <p style="font-size: 13px; color: var(--text-muted);">Set your keys and choose primary provider order. If one fails, Wolfy automatically tries the next one without interruption.</p>
       
       <div class="form-group">
-        <label>OpenRouter API Key (Recommended - Free & Paid)</label>
+        <label>Primary Provider Priority</label>
+        <select id="primaryProvider" style="background: var(--bg-base); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; width: 100%;">
+          <option value="openrouter">1. OpenRouter (Supports gpt-oss-20b, North-mini-code, Gemma 4, Laguna M1)</option>
+          <option value="openai">1. OpenAI (GPT-4o)</option>
+          <option value="anthropic">1. Anthropic (Claude)</option>
+          <option value="gemini">1. Google Gemini</option>
+          <option value="mistral">1. Mistral AI</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>OpenRouter API Key</label>
         <input type="password" id="keyOpenRouter" placeholder="sk-or-v1-...">
       </div>
       <div class="form-group">
@@ -232,7 +243,7 @@
       </div>
 
       <div style="display: flex; gap: 10px;">
-        <button class="btn btn-primary btn-block" onclick="window.saveApiKeys()">Save Keys</button>
+        <button class="btn btn-primary btn-block" onclick="window.saveApiKeys()">Save Settings</button>
         <button class="btn btn-block" onclick="window.closeApiModal()" style="margin-top: 0;">Close</button>
       </div>
     </div>
@@ -264,7 +275,7 @@
       <div class="chat-header-bar">
         <span style="font-size: 14px; font-weight: 600;">Chat with Wolfy</span>
         <button class="model-selector-btn" onclick="window.toggleModelPopover()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1 z"></path></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 0 l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1 z"></path></svg>
           <span id="popoverBadge">Free • Reasoning x1</span>
         </button>
 

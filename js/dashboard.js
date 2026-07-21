@@ -53,12 +53,16 @@ function answerCall() {
 
 function openApiModal() {
   document.getElementById('apiKeyModal').style.display = 'flex';
-  // Load existing keys if any
   document.getElementById('keyOpenRouter').value = localStorage.getItem('codewolf_key_openrouter') || '';
   document.getElementById('keyOpenAI').value = localStorage.getItem('codewolf_key_openai') || '';
   document.getElementById('keyAnthropic').value = localStorage.getItem('codewolf_key_anthropic') || '';
   document.getElementById('keyGemini').value = localStorage.getItem('codewolf_key_gemini') || '';
   document.getElementById('keyMistral').value = localStorage.getItem('codewolf_key_mistral') || '';
+  
+  const currentPriority = JSON.parse(localStorage.getItem('codewolf_provider_priority') || '["openrouter"]')[0];
+  if (currentPriority) {
+    document.getElementById('primaryProvider').value = currentPriority;
+  }
 }
 
 function closeApiModal() {
@@ -66,6 +70,7 @@ function closeApiModal() {
 }
 
 function saveApiKeys() {
+  const primary = document.getElementById('primaryProvider').value;
   const openrouter = document.getElementById('keyOpenRouter').value.trim();
   const openai = document.getElementById('keyOpenAI').value.trim();
   const anthropic = document.getElementById('keyAnthropic').value.trim();
@@ -76,6 +81,11 @@ function saveApiKeys() {
     alert('Please provide at least one API key.');
     return;
   }
+
+  // Set priority order putting chosen primary first, then others
+  const allProviders = ['openrouter', 'openai', 'anthropic', 'gemini', 'mistral'];
+  const priority = [primary, ...allProviders.filter(p => p !== primary)];
+  localStorage.setItem('codewolf_provider_priority', JSON.stringify(priority));
 
   if (openrouter) localStorage.setItem('codewolf_key_openrouter', openrouter);
   else localStorage.removeItem('codewolf_key_openrouter');
@@ -93,7 +103,7 @@ function saveApiKeys() {
   else localStorage.removeItem('codewolf_key_mistral');
 
   closeApiModal();
-  alert('API keys saved successfully!');
+  alert('API settings saved successfully!');
 }
 
 function toggleModelPopover() {
@@ -148,7 +158,6 @@ async function sendMessage() {
   const reasoningPower = parseInt(document.getElementById('reasoningSlider').value);
   const modelTier = document.getElementById('modelTier').value;
 
-  // Show "Wolfy is reflecting..." with reasoning multiplier
   const chatMessages = document.getElementById('chatMessages');
   const thinkingId = 'thinking_' + Date.now();
   const thinkingDiv = document.createElement('div');
@@ -158,10 +167,9 @@ async function sendMessage() {
   chatMessages.appendChild(thinkingDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
-  // Call real AI API
+  // Call real AI API with automatic multi-provider fallback
   const aiResponse = await callWolfyAI(text, studentMemory, modelTier, reasoningPower, userLang);
 
-  // Remove thinking indicator
   document.getElementById(thinkingId)?.remove();
 
   // 3x Self-Check verification simulation
@@ -175,7 +183,6 @@ async function sendMessage() {
   appendMessage('wolfy', aiResponse);
 }
 
-// Bind functions to window for global inline event handlers in modules
 window.answerCall = answerCall;
 window.openApiModal = openApiModal;
 window.closeApiModal = closeApiModal;
