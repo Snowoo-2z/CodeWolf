@@ -1,4 +1,5 @@
 // Wolfy AI Teacher Dashboard Logic
+import { callWolfyAI } from './aiClient.js';
 
 let studentMemory = {
   level: "Unknown",
@@ -29,7 +30,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   updateMemoryUI();
   updatePopoverBadge();
+
+  // Check if API keys are configured, if not prompt
+  checkApiKeysOnStart();
 });
+
+function checkApiKeysOnStart() {
+  const keys = ['openrouter', 'openai', 'anthropic', 'gemini', 'mistral'];
+  const hasKey = keys.some(k => localStorage.getItem(`codewolf_key_${k}`));
+  if (!hasKey) {
+    openApiModal();
+  }
+}
 
 function answerCall() {
   document.getElementById('callScreen').style.opacity = '0';
@@ -37,6 +49,51 @@ function answerCall() {
     document.getElementById('callScreen').style.display = 'none';
     startWolfySession();
   }, 400);
+}
+
+function openApiModal() {
+  document.getElementById('apiKeyModal').style.display = 'flex';
+  // Load existing keys if any
+  document.getElementById('keyOpenRouter').value = localStorage.getItem('codewolf_key_openrouter') || '';
+  document.getElementById('keyOpenAI').value = localStorage.getItem('codewolf_key_openai') || '';
+  document.getElementById('keyAnthropic').value = localStorage.getItem('codewolf_key_anthropic') || '';
+  document.getElementById('keyGemini').value = localStorage.getItem('codewolf_key_gemini') || '';
+  document.getElementById('keyMistral').value = localStorage.getItem('codewolf_key_mistral') || '';
+}
+
+function closeApiModal() {
+  document.getElementById('apiKeyModal').style.display = 'none';
+}
+
+function saveApiKeys() {
+  const openrouter = document.getElementById('keyOpenRouter').value.trim();
+  const openai = document.getElementById('keyOpenAI').value.trim();
+  const anthropic = document.getElementById('keyAnthropic').value.trim();
+  const gemini = document.getElementById('keyGemini').value.trim();
+  const mistral = document.getElementById('keyMistral').value.trim();
+
+  if (!openrouter && !openai && !anthropic && !gemini && !mistral) {
+    alert('Please provide at least one API key.');
+    return;
+  }
+
+  if (openrouter) localStorage.setItem('codewolf_key_openrouter', openrouter);
+  else localStorage.removeItem('codewolf_key_openrouter');
+
+  if (openai) localStorage.setItem('codewolf_key_openai', openai);
+  else localStorage.removeItem('codewolf_key_openai');
+
+  if (anthropic) localStorage.setItem('codewolf_key_anthropic', anthropic);
+  else localStorage.removeItem('codewolf_key_anthropic');
+
+  if (gemini) localStorage.setItem('codewolf_key_gemini', gemini);
+  else localStorage.removeItem('codewolf_key_gemini');
+
+  if (mistral) localStorage.setItem('codewolf_key_mistral', mistral);
+  else localStorage.removeItem('codewolf_key_mistral');
+
+  closeApiModal();
+  alert('API keys saved successfully!');
 }
 
 function toggleModelPopover() {
@@ -101,22 +158,13 @@ async function sendMessage() {
   chatMessages.appendChild(thinkingDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
-  // Simulate AI response delay proportional to reasoning power
-  const delay = Math.min(800 + (reasoningPower * 100), 4000);
-  await new Promise(r => setTimeout(r, delay));
+  // Call real AI API
+  const aiResponse = await callWolfyAI(text, studentMemory, modelTier, reasoningPower, userLang);
 
   // Remove thinking indicator
   document.getElementById(thinkingId)?.remove();
 
-  // Generate response
-  let response = "";
-  if (userLang === 'fr') {
-    response = `C'est noté ! En tant que **Wolfy**, j'analyse ton niveau avec une puissance de raisonnement de **x${reasoningPower}**. Ta fiche de mémoire a été mise à jour. Que souhaites-tu aborder maintenant en HTML, CSS ou JavaScript ?`;
-  } else {
-    response = `Got it! As **Wolfy**, I've processed your message using reasoning power **x${reasoningPower}** (${modelTier} tier). Your student memory has been updated. What topic in HTML, CSS, or JS should we tackle next?`;
-  }
-
-  // 3x Self-Check verification simulation (repeated reasoningPower times for rigorous self-check)
+  // 3x Self-Check verification simulation
   for (let pass = 0; pass < 3; pass++) {
     studentMemory.progress = Math.min(100, studentMemory.progress + (reasoningPower * 2));
   }
@@ -124,5 +172,14 @@ async function sendMessage() {
   localStorage.setItem('codewolf_student_memory', JSON.stringify(studentMemory));
   updateMemoryUI();
 
-  appendMessage('wolfy', response);
+  appendMessage('wolfy', aiResponse);
 }
+
+// Bind functions to window for global inline event handlers in modules
+window.answerCall = answerCall;
+window.openApiModal = openApiModal;
+window.closeApiModal = closeApiModal;
+window.saveApiKeys = saveApiKeys;
+window.toggleModelPopover = toggleModelPopover;
+window.updatePopoverBadge = updatePopoverBadge;
+window.sendMessage = sendMessage;
