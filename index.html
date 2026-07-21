@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CodeWolf - AI-Powered Code & Agent Studio</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="landing-body">
 
@@ -14,8 +14,8 @@
       <span>CodeWolf</span>
     </div>
     <div class="nav-buttons">
-      <button class="btn" onclick="location.href='signin.html'">Sign In</button>
-      <button class="btn btn-primary" onclick="location.href='signin.html'">Sign Up</button>
+      <a href="/signin" class="btn">Sign In</a>
+      <a href="/signin" class="btn btn-primary">Sign Up</a>
     </div>
   </nav>
 
@@ -23,22 +23,21 @@
     <div class="hero-content">
       <span class="badge">Next-Gen AI Development</span>
       <h1>Build the future with <span class="gradient-text">CodeWolf</span></h1>
-      <p>The ultimate collaborative environment for developers and intelligent AI agents. Fast, seamless, and built for modern workflows.</p>
+      <p>The ultimate collaborative environment for developers and intelligent AI agents. Fast, seamless, and mobile-friendly.</p>
       <div class="hero-cta">
         <button class="btn btn-primary btn-large" onclick="checkAuthAndRedirect()">Get Started Free</button>
-        <button class="btn btn-large" onclick="location.href='signin.html'">Explore Features</button>
+        <a href="/signin" class="btn btn-large">Explore Features</a>
       </div>
     </div>
   </main>
 
+  <script src="/js/auth.js"></script>
   <script>
     function checkAuthAndRedirect() {
-      // Simulate auth check: if logged in -> dashboard, else -> signin
-      const isLoggedIn = localStorage.getItem('codewolf_logged_in');
-      if (isLoggedIn === 'true') {
-        location.href = 'dashboard.html';
+      if (CodeWolfAuth.isLoggedIn()) {
+        window.location.href = '/dashboard';
       } else {
-        location.href = 'signin.html';
+        window.location.href = '/signin';
       }
     }
   </script>

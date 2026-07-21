@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Setup Profile - CodeWolf</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="auth-body">
 
@@ -29,17 +29,15 @@
     </form>
   </div>
 
+  <script src="/js/auth.js"></script>
   <script>
     function completeOnboarding(e) {
       e.preventDefault();
       const username = document.getElementById('usernameInput').value;
       const aiName = document.getElementById('aiNameInput').value;
       
-      localStorage.setItem('codewolf_logged_in', 'true');
-      localStorage.setItem('codewolf_username', username);
-      localStorage.setItem('codewolf_ai_name', aiName);
-
-      location.href = 'dashboard.html';
+      CodeWolfAuth.login({ username, aiName });
+      window.location.href = '/dashboard';
     }
   </script>
 </body>
