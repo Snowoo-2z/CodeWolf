@@ -1,0 +1,5 @@
+// CodeWolf Configuration (Pre-configured for instant deployment)
+window.CODEWOLF_CONFIG = {
+  SUPABASE_URL: "https://xrwpogtkypetlcsuarzx.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_B4xSpnvvomMzte9sh9-fwA_iKyAcuSh"
+};

@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Setup Profile - CodeWolf</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="auth-body">
 
   <div class="auth-card">
     <div class="brand-center">
+      <img src="/assets/logo.svg" alt="CodeWolf Logo" style="width: 70px; height: auto; margin-bottom: 10px;">
       <h2>Complete Your Profile</h2>
       <p>Welcome! Let's configure your CodeWolf identity.</p>
     </div>
@@ -29,14 +31,17 @@
     </form>
   </div>
 
-  <script src="/js/auth.js"></script>
+  <script src="/js/config.js"></script>
+  <script type="module" src="/js/auth.js"></script>
   <script>
-    function completeOnboarding(e) {
+    async function completeOnboarding(e) {
       e.preventDefault();
       const username = document.getElementById('usernameInput').value;
       const aiName = document.getElementById('aiNameInput').value;
       
-      CodeWolfAuth.login({ username, aiName });
+      localStorage.setItem('codewolf_username', username);
+      localStorage.setItem('codewolf_ai_name', aiName);
+
       window.location.href = '/dashboard';
     }
   </script>

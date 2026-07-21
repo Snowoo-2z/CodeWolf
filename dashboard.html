@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - CodeWolf</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="dashboard-body">
 
   <nav class="landing-nav">
     <div class="brand">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <img src="/assets/logo.svg" alt="CodeWolf Logo" style="width: 28px; height: auto;">
       <span>CodeWolf Dashboard</span>
     </div>
     <div class="nav-buttons">
       <span id="userGreeting" style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center;">Welcome</span>
-      <button class="btn" onclick="CodeWolfAuth.logout()">Sign Out</button>
+      <button class="btn" onclick="window.CodeWolfAuth.logout()">Sign Out</button>
     </div>
   </nav>
 
@@ -27,11 +28,19 @@
     </div>
   </main>
 
-  <script src="/js/auth.js"></script>
+  <script src="/js/config.js"></script>
+  <script type="module" src="/js/auth.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const user = CodeWolfAuth.getUser();
-      document.getElementById('userGreeting').textContent = `Hello, ${user.username} (AI calls you: ${user.aiName})`;
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await window.CodeWolfAuth.getUserSession();
+      if (!user) {
+        window.location.href = '/signin';
+        return;
+      }
+      
+      const username = localStorage.getItem('codewolf_username') || user.email?.split('@')[0] || 'Developer';
+      const aiName = localStorage.getItem('codewolf_ai_name') || 'Assistant';
+      document.getElementById('userGreeting').textContent = `Hello, ${username} (AI calls you: ${aiName})`;
     });
   </script>
 </body>
