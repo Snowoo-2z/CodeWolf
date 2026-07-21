@@ -1,0 +1,7 @@
+const KEY='codewolf_progress_v2';
+const day=d=>new Date(d).toISOString().slice(0,10);const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return day(d)};
+export function getProgress(){let data={xp:120,streak:0,lastLearningDay:null,earnedRewards:[]};try{data={...data,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{}const legacy=JSON.parse(localStorage.getItem('codewolf_student_memory')||'{}');if(!localStorage.getItem(KEY)&&Number.isFinite(legacy.xp))data.xp=legacy.xp;return data}
+export function saveProgress(data){localStorage.setItem(KEY,JSON.stringify(data));const memory=JSON.parse(localStorage.getItem('codewolf_student_memory')||'{}');memory.xp=data.xp;memory.streak=data.streak;memory.lastLearningDay=data.lastLearningDay;localStorage.setItem('codewolf_student_memory',JSON.stringify(memory));return data}
+export function registerLearningDay(){const p=getProgress(),today=day(new Date());if(p.lastLearningDay===today)return p;p.streak=p.lastLearningDay===yesterday()?p.streak+1:1;p.lastLearningDay=today;return saveProgress(p)}
+export function awardXp(amount,rewardId){const p=getProgress();if(!rewardId||p.earnedRewards.includes(rewardId))return {progress:p,awarded:false};p.xp=Math.max(0,p.xp+Math.max(0,Number(amount)||0));if(rewardId)p.earnedRewards=[...p.earnedRewards,rewardId].slice(-200);saveProgress(p);return {progress:p,awarded:true}}
+export function streakStatus(){const p=getProgress(),today=day(new Date());if(p.lastLearningDay&&p.lastLearningDay!==today&&p.lastLearningDay!==yesterday()){p.streak=0;saveProgress(p)}return p}

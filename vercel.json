@@ -8,6 +8,7 @@
     { "source": "/assessment", "destination": "/assessment.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/lesson", "destination": "/lesson.html" },
+    { "source": "/library", "destination": "/library.html" },
     { "source": "/studio", "destination": "/studio.html" }
   ],
   "headers": [{"source":"/(.*)","headers":[
